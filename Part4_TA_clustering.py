@@ -21,7 +21,7 @@ for coin in coins:
     start_str = 'Jan 1, 2017'
     end_str = 'Oct 17, 2021'
 
-    klines = client.get_historical_klines(symbol=f'{coin}USDT', interval=client.KLINE_INTERVAL_1MINUTE, start_str=start_str, end_str=end_str)
+    klines = client.get_historical_klines(symbol=f'{coin}USDT', interval=client.KLINE_INTERVAL_1HOUR, start_str=start_str, end_str=end_str)
     cols = ['OpenTime',
             f'{coin}-USD_Open',
             f'{coin}-USD_High',
