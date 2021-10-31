@@ -82,38 +82,35 @@ balance_unit = 'USDT'
 first = True
 
 while True:
-    if (datetime.now().minute == 0 and datetime.now().second == 9) or first:
-        first = False
-        df = gather_data(symbols,48)
-        states = get_states(df,symbols)
-        print(f'Current state of the market:')
-        print(states)
-        time.sleep(1)
-    
-    time.sleep(10)
-    
-    try:
-        print('\n')
-        if balance_unit == 'USDT': #looking for buys
-            for symbol in symbols:
-                ask_price = float(client.get_orderbook_ticker(symbol=f'{symbol}USDT')['askPrice'])
-                lower_band = df[f'{symbol}_lower_band'].iloc[-1]
-                print(f'{symbol}: Best ask {ask_price} | Lower Band {lower_band}')
-                if ask_price < lower_band and states[symbol] == 'inside': #buy signal 
-                    # TODO: implement buy logic
-                    print('buy')
-                    balance_unit = symbol
-                    break
+    if (datetime.now().second % 10 == 0) or first:
+        if (datetime.now().minute == 17 and datetime.now().second == 10) or first:
+            # refresh data
+            first = False
+            df = gather_data(symbols,48)
+            states = get_states(df,symbols)
+            print('Current state of the market:')
+            print(states)
+        try:
+            print('\n')
+            if balance_unit == 'USDT': # looking to buy
+                for symbol in symbols:
+                    ask_price = float(client.get_orderbook_ticker(symbol = f'{symbol}USDT')['askPrice'])
+                    lower_band = df[f'{symbol}_lower_band'].iloc[-1]
+                    print(f'{symbol}: ask price {ask_price} | lower band {lower_band}')
+                    if ask_price < lower_band and states[symbol] == 'inside': #buy signal
+                        print('buy')
+                        balance_unit = symbol
+                        break
 
+            if balance_unit != 'USDT': # looking to sell
+                bid_price = float(client.get_orderbook_ticker(symbol = f'{balance_unit}USDT')['bidPrice'])
+                upper_band = df[f'{balance_unit}_upper_band'].iloc[-1]
+                if bid_price > upper_band and states[balance_unit] == 'inside': #sell signal
+                    print('sell')
+                    balance_unit = 'USDT'
 
-        if balance_unit != 'USDT': #looking for sell
-            bid_price = float(client.get_orderbook_ticker(symbol=f'{balance_unit}USDT')['bidPrice'])
-            upper_band = df[f'{balance_unit}_upper_band'].iloc[-1]
-            if bid_price > upper_band and states[balance_unit] == 'inside':
-                # TODO: implement sell logic
-                print('sell')
-                balance_unit = 'USDT'
-    
-    except BinanceAPIException as e:
-        print(e.status_code)
-        print(e.message)
+            time.sleep(1)
+            
+        except BinanceAPIException as e:
+            print(e.status_code)
+            print(e.message)
