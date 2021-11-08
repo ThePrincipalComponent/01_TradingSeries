@@ -6,6 +6,8 @@ import time
 from binance.exceptions import *
 from auxiliary_functions import *
 
+client = Client(api_key, secret_key)
+
 symbols = ['BTC','ETH','LTC']
 start_n_hours_ago = 48
 balance_unit = 'USDT'
