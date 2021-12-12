@@ -15,10 +15,6 @@ first = True
 
 BUY_AMOUNT_USDT = 100
 
-precision = {}
-for symbol in symbols:
-    precision[symbol] = client.get_symbol_info(f'{symbol}USDT')['quotePrecision']
-
 while True:
     if (datetime.now().second % 10 == 0) or first:
         if (datetime.now().minute == 0 and datetime.now().second == 10) or first:
