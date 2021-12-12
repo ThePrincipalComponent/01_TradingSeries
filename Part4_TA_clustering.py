@@ -127,6 +127,6 @@ fig = px.scatter(pcas_filt,
                 template="simple_white")
 fig.show()
 
-shade_plot(pcas,'pca1','pca2','label',50)
+shade_plot(pcas,'pca1','pca2','profit / loss',50)
     
     
