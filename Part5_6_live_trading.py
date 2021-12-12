@@ -39,8 +39,9 @@ while True:
                     if ask_price < lower_band and states[symbol] == 'inside': #buy signal
                         ######################
                         print(f'Buy order placed:')
+                        precision = get_precision(price=ask_price,desired_amount_usdt=BUY_AMOUNT_USDT)
                         buy_order = client.order_limit_buy(symbol=f'{symbol}USDT',
-                                                          quantity=truncate(BUY_AMOUNT_USDT / ask_price, precision[symbol]),
+                                                          quantity=truncate(BUY_AMOUNT_USDT / ask_price, precision),
                                                           price = ask_price)
                         print(buy_order)
 
@@ -82,8 +83,9 @@ while True:
                 upper_band = df[f'{balance_unit}_upper_band'].iloc[-1]
                 if bid_price > upper_band and states[balance_unit] == 'inside': #sell signal
                     ######################
+                    # use same precision as buy order
                     client.order_market_sell(symbol=buy_order['symbol'],
-                                            quantity=truncate(float(buy_order['executedQty']), precision[buy_order['symbol'].replace('USDT','')]))
+                                            quantity=truncate(float(buy_order['executedQty']), precision))
                     
                     ######################
                     balance_unit = 'USDT'

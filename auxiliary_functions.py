@@ -5,8 +5,15 @@ from datetime import datetime, timedelta
 import time
 import math
 from binance.exceptions import *
+import numpy as np
 
 client = Client(api_key, secret_key,tld='us')
+
+def get_precision(price,desired_amount_usdt):
+    #get least precision possible within $0.50 of buy amount
+    for i in range(1,15):
+        if abs(price*np.round(desired_amount_usdt/float(price),i) - desired_amount_usdt) < 0.5:
+            return(i)
 
 def truncate(number, decimals=0):
     """
